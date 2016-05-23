@@ -1,3 +1,5 @@
-# Directory Layout
+<a name="Directory Layout"/>
+## Directory Layout
 
-The writing example folder contains serveral
+The writing example folder contains three folders.
+
