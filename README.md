@@ -1,3 +1,3 @@
-# Projects
+# Directory Layout
 
-woeijfawoi[pefj
+The writing example folder contains serveral
