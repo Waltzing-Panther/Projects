@@ -38,9 +38,9 @@ cluster = function(M){
 # EMest1 uses EM-algorithm to estimate parameters in gaussian
 #   mixture model
 # input:
-#   data = matrix of observations (observations given by row)
-#   clusterNum = number of clusters to use
-#   delta = precision parameter (e.g delta = .01) ensures 
+#   data: matrix of observations (observations given by row)
+#   clusterNum: number of clusters to use
+#   delta: precision parameter (e.g delta = .01) ensures 
 #      algorithm only exits when difference for each
 #      parameter estimate between sucessive iterations 
 #      is less that .01
@@ -110,7 +110,12 @@ EMest1 = function(data,clusterNum, delta, maxiter){
 }
 
 
-# Function with just maxiter
+# EMest2 uses EM-algorithm to estimate parameters in gaussian
+#   mixture model
+# input:
+#   data: matrix of observations (observations given by row)
+#   clusterNum: number of clusters to use
+#   maxiter: number of iterations to run before termination
 EMest2 = function(data,clusterNum, maxiter){
   data = unname(data)
   n = dim(data)[1]
@@ -161,12 +166,12 @@ EMest2 = function(data,clusterNum, maxiter){
   return(list(mix = mix, mu = mu, sigma = sigma, mem = M))
 }
 
+# EMest is a wrapper function for EMest1 and Emest2 which
+#   allows us to specify either the delta term or the maxiter term.
 EMest = function(data,clusterNum, delta = .01, maxiter = 10, type = 1){
   if(type == 1)
     return(EMest1(data,clusterNum, delta, maxiter))
   else if(type == 2)
     return(EMest2(data,clusterNum, maxiter))
 }
-
-EMest(faithful, 2, type = 1)
 

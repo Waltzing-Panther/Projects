@@ -4,10 +4,15 @@ library(animation)
 library(foreach)
 library(parallel)
 
-#requires a 2 column matrix
-#xres = grid points on x axis
-#yres = grid points on y axis
-#clusterCount = number of clusters 
+# drawplot creates a cluster plot of 2-dimensional data. The EM-Algorithm
+#   for Gaussian mixture models is used. 
+# input:
+#   data: a 2 column matrix
+#   xres: courseness parameter for x-axis
+#   yres: courseness parameter for y-axis
+#   clusterCount: number of clusters to be used
+#   seed: seed for random generator
+#   iter: number of iterations for the EM-Algorithm
 drawplot = function(data, clusterCount, xres, yres, seed, iter){
   set.seed(seed)
   rlenX = abs(min(data[,1]) - max(data[,1]))
@@ -37,7 +42,6 @@ drawplot = function(data, clusterCount, xres, yres, seed, iter){
   plotPoints[,2] = Y
   for(i in 1:clusterCount){
     plotPoints[,i+2] = apply(tmp,1,function(x){ dmvnorm(x, mean = mu[,i], sigma = sigma[,,i])})
-    #v2 = apply(tmp,1,function(x){ dmvnorm(x, mean = mu[,2], sigma = sigma[,,2])})
   }
   
   colnames(plotPoints)[1:2] = c("x","y")
@@ -59,15 +63,9 @@ drawplot = function(data, clusterCount, xres, yres, seed, iter){
   return(p1)
 }
 
-dWrapper = function(data, clusterCount, seed, xres, yres, iter){
-  list = vector("list", max(iter))
-  foreach(i=iter) %dopar% {
-    set.seed(seed)
-    list[[i]] = drawplot(data, clusterCount, xres, yres, i)
-  }
-  return(list)
-}
 
+# dWrapper creates a gif of drawplot graphs evaluate at the values indicated
+#   in iter.
 dWrapper = function(data, clusterCount, seed, xres, yres, iter){
   no_cores = detectCores() - 1
   cl = makeCluster(no_cores, type = "FORK")
@@ -84,9 +82,5 @@ dWrapper = function(data, clusterCount, seed, xres, yres, iter){
   return(retList)
 }
 
-out = dWrapper(faithful, 2, 100, 100, 100, 0:12)
-saveGIF(for(i in 1:13) print(out[[i]]), interval = .1, movie.name="EM.gif")
 
-out = dWrapper(wine[,c(2,3)], 3, 100, 100, 100, 0:100)
-saveGIF(for(i in 1:101) print(out[[i]]), interval = .1, movie.name="EM2.gif")
 

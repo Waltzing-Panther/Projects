@@ -1,8 +1,6 @@
 library(ggplot2)
 library(pracma)
 
-wine = read.table("wine.data")
-
 grpSelector = function(repSet, x){
   x = as.numeric(x)
   tmp = t(apply(repSet, 1, function(y){y - x}))
@@ -52,18 +50,4 @@ kmeans2 = function(data,items,k){
   return(data)
 }
 
-k = 3
-items = c(2,3)
-data = kmeans2(wine, items, k)
-data$clusNum = as.factor(data$clusNum)
-graph = ggplot(data, aes(V2,V3, colour = clusNum)) + geom_point()
-graph
 
-data2 = wine
-data2$clusNum = kmeans(wine[,items], centers = 3)$cluster
-data2$clusNum = as.factor(data2$clusNum)
-graph = ggplot(data2, aes(V2,V3, colour = clusNum)) + geom_point()
-graph
-
-system.time(kmeans2(wine, items, k))
-system.time(kmeans(wine[,items], centers = 3))
